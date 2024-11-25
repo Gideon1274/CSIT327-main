@@ -1,0 +1,71 @@
+{% extends 'store/boang.html' %}
+{% load static %}
+
+{% block content %}
+<div class="header-right">
+    <!-- Search Form -->
+    <form method="get" action="{% url 'store:store' %}" class="search_form">
+        <input type="text" name="query" placeholder="Search..." class="form-control" value="{{ request.GET.query }}">
+
+        <select name="category" class="form-control" onchange="this.form.submit()">
+            <option value="" {% if not request.GET.category %}selected{% endif %}>All categories</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn btn-outline-success">Search</button>
+    </form>
+</div>
+
+<!-- Products Section -->
+<div class="row">
+    <h2 class="text-center">Shopping</h2>
+    <p class="text-center">Products found: {{ products.count }}</p>
+
+    {% if products %}
+        {% for product in products %}
+            <div class="col-lg-4 mb-4">
+                <a href="{% url 'store:product' pk=product.id %}" class="btn btn-outline-success d-block" style="text-decoration: none; color: white;">
+                    <img class="thumbnail w-full" src="{{ product.image.url }}" alt="{{ product.name }}">
+                    <div class="box-element product d-flex flex-column p-4 bg-gray-800 rounded-lg shadow-lg">
+                        <h6 class="mt-2 mb-1 text-white"><strong>{{ product.name }}</strong></h6>
+                        <p class="text-white"><strong>Average Rating:</strong> {{ product.display_average_stars }}</p>
+                        <div class="stars">
+                            {{ product.display_stars }}
+                        </div>
+                        <hr class="mt-1 mb-3 border-orange-500">
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                {% if user.is_authenticated %}
+                                <form action="{% url 'store:update_item' %}" method="POST">
+                                    {% csrf_token %}
+                                    <button data-product="{{ product.id }}" data-action="add"
+                                        class="btn btn-outline-secondary add-btn update-cart" style="padding: 12px;">
+                                        Add to Cart
+                                    </button>
+                                </form>
+                                <p class="text-white">Category: {{ product.category.name }}</p>
+                                <p class="text-white">Seller: {{ product.user }}</p>
+                            </div>
+                            <h4 class="mb-0 text-white"><strong>${{ product.price|floatformat:2 }}</strong></h4>
+                            {% else %}
+                            <p class="text-white">Category: {{ product.category.name }}</p>
+                                <p class="text-white">Seller: {{ product.user }}</p>
+                            </div>
+                            <h4 class="mb-0 text-white"><strong>${{ product.price|floatformat:2 }}</strong></h4>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-white text-center">No products found.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

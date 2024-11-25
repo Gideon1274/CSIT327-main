@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #000, #222); /* Dark gradient background */
+            font-family: 'Roboto', sans-serif; /* Google font for body text */
+            color: #f8f9fa; /* Light text color for readability */
+            display: flex; /* Use flexbox for centering */
+            align-items: center; /* Center items vertically */
+            justify-content: center; /* Center items horizontally */
+            height: 100vh; /* Full viewport height */
+            margin: 0; /* Remove default margin */
+        }
+
+        .header {
+            width: 98%; 
+            background-color: #000; 
+            padding: 20px; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Shadow for header */
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            z-index: 10;
+        }
+
+        .header a {
+            float: left;
+            color: orange; /* Orange text for links */
+            text-align: center;
+            padding: 12px;
+            text-decoration: none;
+            font-size: 18px;
+            line-height: 25px;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.3s; /* Add transition */
+        }
+
+        .header a.logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .header a:hover {
+            background-color: #ff8c00; /* Lighter orange on hover */
+            color: #fff; /* White text on hover */
+            transform: translateY(-2px); /* Lift effect on hover */
+        }
+
+        .header a.active {
+            background-color: #ff8c00; /* Active link color */
+            color: white;
+        }
+
+        .header-right {
+            float: right;
+        }
+
+        @media screen and (max-width: 500px) {
+            .header a {
+                float: none;
+                display: block;
+                text-align: left;
+            }
+            .header-right {
+                float: none;
+            }
+        }
+
+        .container {
+            max-width: 400px;
+            padding: 20px;
+            border: 1px solid #ff8c00; /* Orange border for the container */
+            border-radius: 8px;
+            background-color: #333; /* Dark background for the container */
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5); /* Deeper shadow for modern look */
+            animation: fadeIn 0.5s ease-in; /* Animation for the container */
+            transition: transform 0.3s; /* Add transform transition */
+        }
+
+        .container:hover {
+            transform: scale(1.02); /* Slight zoom effect on hover */
+        }
+
+        h2 {
+            margin-bottom: 20px; /* Spacing below the heading */
+            color: orange; /* Orange color for headings */
+            font-family: 'Montserrat', sans-serif; /* Google font for headings */
+        }
+
+        .message {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #d4edda; /* Change to a contrasting color if needed */
+            border-radius: 4px;
+            background-color: #ff8c00; /* Orange background for messages */
+            color: #fff; /* White text for better contrast */
+            animation: slideIn 0.5s; /* Animation for message display */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        button {
+            background-color: orange; /* Button background color */
+            color: black; /* Button text color */
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s; /* Add transition */
+            width: 100%; /* Full width button */
+            font-size: 16px; /* Button font size */
+        }
+
+        button:hover {
+            background-color: #ffcc00; /* Lighter orange on hover */
+            transform: translateY(-2px); /* Lift effect on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="{% url 'store:home' %}" class="logo">Homepage</a>
+    <div class="header-right">
+        <a href="{% url 'store:signup_view' %}">Sign up</a>
+        <a href="{% url 'store:login_view' %}">Login</a>
+    </div>
+</div>
+
+
+<div class="container" style="color: white;">
+    <h2>Sign Up</h2>
+    <form method="POST" >
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+    </form>
+    <p>Already have an account? <a href="{% url 'store:login_view' %}">Log in</a></p>
+</div>
+</body>
+</html>

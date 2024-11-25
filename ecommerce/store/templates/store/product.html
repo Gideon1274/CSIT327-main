@@ -1,0 +1,88 @@
+{% extends 'store/boang.html' %}
+{% block content %}
+
+<div class="container">
+    <h2>{{ product.name }}</h2>
+    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid">
+    <!-- <p><strong>Average Rating:</strong> {{ product.average_rating }} ★</p> -->
+    <p><strong>Average Rating:</strong> {{ product.display_average_stars }}</p>
+    <div class="stars">
+        {{ review.display_stars }}
+    </div>
+    <p><strong>Price:</strong> ${{ product.price }}</p>
+    <p><strong>Category:</strong> {{ product.category.name }}</p>
+    <p><strong>Description:</strong> {{ product.description }}</p>
+    {% if user.is_authenticated %}
+    <form action="{% url 'store:update_item' %}" method="POST">
+        {% csrf_token %}
+        <button data-product="{{ product.id }}" data-action="add"
+                class="btn btn-outline-secondary add-btn update-cart" style ="padding: 20px; ">Add to Cart</button>
+                <!-- <a class="btn btn-outline-success" href="#">View</a> -->
+    </form>
+    {% else %}
+    
+    {% endif %}
+</div>
+<div class="container mt-5">
+    <h3>Reviews</h3>
+    <ul class="list-group">
+        {% for review in reviews %}
+            <li class="list-group-item">
+                <strong>{{ review.user.username }}</strong> 
+                ({{ review.date_added|date:"F j, Y, g:i a" }})
+                <div class="stars">{{ review.display_stars }}</div>
+                <p>{{ review.review }}</p>
+
+                {% if review.user == user %}
+                    <!-- Delete button, only visible to the review's author -->
+                    <form method="POST" action="{% url 'store:delete_review' review.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li class="list-group-item">No reviews yet. Be the first to review this product!</li>
+        {% endfor %}
+    </ul>
+</div>
+{% if user.is_authenticated %}
+<div class="container mt-5">
+    <h3>Leave a Review</h3>
+    <form method="POST" id="reviewForm">
+        {% csrf_token %}
+        <div class="stars">
+            <input type="radio" id="star5" name="rating" value="5" />
+            <label for="star5" title="5 stars">★</label>
+            
+            <input type="radio" id="star4" name="rating" value="4" />
+            <label for="star4" title="4 stars">★</label>
+            
+            <input type="radio" id="star3" name="rating" value="3" />
+            <label for="star3" title="3 stars">★</label>
+            
+            <input type="radio" id="star2" name="rating" value="2" />
+            <label for="star2" title="2 stars">★</label>
+            
+            <input type="radio" id="star1" name="rating" value="1" />
+            <label for="star1" title="1 star">★</label>
+        </div>
+        <textarea name="review" class="form-control mt-3" placeholder="Write your review here"></textarea>
+        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+    </form>
+</div>
+{% else %}
+<p class="text-danger">You must be logged in to leave a review.</p>
+{% endif %}
+<script>
+    document.querySelectorAll('.btn-danger').forEach(button => {
+        button.addEventListener('click', function(event) {
+            if (!confirm("Are you sure you want to delete this review?")) {
+                event.preventDefault();
+            }
+        });
+    });
+    </script>
+
+{% endblock content %}
+
